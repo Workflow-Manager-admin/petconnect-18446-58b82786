@@ -19,6 +19,25 @@ If backend is running at a different address or port, create a `.env` file in th
 REACT_APP_BACKEND_URL=https://your-backend-host:port
 ```
 
+# Troubleshooting Connectivity
+
+- If you get "localhost refused to connect", check:
+  - The FastAPI backend is running and accessible at the URL set in `.env`.
+  - The frontend React app is restarted after changes to `.env`.
+  - The browser console/network tab for CORS/network errors.
+  - Your `package.json` for a `"proxy"` field (for local dev, when running backend at `localhost`, recommended for avoiding CORS).
+  - That the URL in `.env` is reachable in your browser (not blocked by firewall or misconfigured port).
+
+## .env Example
+
+```
+REACT_APP_BACKEND_URL=https://vscode-internal-3415-beta.beta01.cloud.kavia.ai:3001
+```
+
+- Make sure there are no extra spaces or quotes in the value!
+- Changes to `.env` require a full restart of `npm start`.
+
+
 See `.env.example` for template.
 
 ## Getting Started
