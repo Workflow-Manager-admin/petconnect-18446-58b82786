@@ -5,6 +5,7 @@ import LoginScreen from "./LoginScreen";
 import RegisterScreen from "./RegisterScreen";
 import PetListings from "./PetListings";
 import PetCreateForm from "./PetCreateForm";
+import PetList from "./PetList";
 import { AuthProvider, useAuth } from "./AuthContext";
 
 // Main navigation bar component using auth context
@@ -237,7 +238,7 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<LoginScreen />} />
             <Route path="/register" element={<RegisterScreen />} />
-            <Route path="/pets" element={<PetListings />} />
+            <Route path="/pets" element={<PetList />} />
             <Route path="/pets/new" element={<PetCreateForm />} />
             {/* TODO: Add more routes/screens here */}
           </Routes>
