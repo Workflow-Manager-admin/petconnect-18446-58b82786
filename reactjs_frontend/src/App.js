@@ -6,6 +6,7 @@ import RegisterScreen from "./RegisterScreen";
 import PetListings from "./PetListings";
 import PetCreateForm from "./PetCreateForm";
 import PetList from "./PetList";
+import Inbox from "./Inbox";
 import { AuthProvider, useAuth } from "./AuthContext";
 
 // Main navigation bar component using auth context
@@ -48,6 +49,13 @@ function AppNav() {
           style={{ marginRight: 16, fontWeight: 600, textDecoration: "none", color: "var(--text-primary)" }}
         >
           Find Pets
+        </Link>
+        <Link
+          className="App-link"
+          to="/inbox"
+          style={{ marginRight: 16, fontWeight: 600, textDecoration: "none", color: "var(--button-bg)" }}
+        >
+          Inbox
         </Link>
         <Link
           className="App-link"
@@ -240,6 +248,7 @@ function App() {
             <Route path="/register" element={<RegisterScreen />} />
             {/* Use PetList (static sample data) instead of dynamic PetListings for test/demo */}
             <Route path="/pets" element={<PetList />} />
+            <Route path="/inbox" element={<Inbox />} />
             <Route path="/pets/new" element={<PetCreateForm />} />
             {/* TODO: Add more routes/screens here */}
           </Routes>
