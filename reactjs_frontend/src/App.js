@@ -3,6 +3,7 @@ import "./App.css";
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from "react-router-dom";
 import LoginScreen from "./LoginScreen";
 import RegisterScreen from "./RegisterScreen";
+import PetListings from "./PetListings";
 import { AuthProvider, useAuth } from "./AuthContext";
 
 // Main navigation bar component using auth context
@@ -41,7 +42,7 @@ function AppNav() {
         </Link>
         <Link
           className="App-link"
-          to="#"
+          to="/pets"
           style={{ marginRight: 16, fontWeight: 600, textDecoration: "none", color: "var(--text-primary)" }}
         >
           Find Pets
@@ -160,7 +161,7 @@ function HomePage() {
         }}/>
         <div>
           <Link className="btn"
-            to="#"
+            to="/pets"
             style={{
               background: "var(--button-bg)",
               color: "var(--button-text)",
@@ -228,6 +229,7 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<LoginScreen />} />
             <Route path="/register" element={<RegisterScreen />} />
+            <Route path="/pets" element={<PetListings />} />
             {/* TODO: Add more routes/screens here */}
           </Routes>
         </div>
