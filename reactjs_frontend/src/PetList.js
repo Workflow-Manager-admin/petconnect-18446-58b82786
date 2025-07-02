@@ -3,12 +3,103 @@ import React, { useState } from "react";
 /**
  * PUBLIC_INTERFACE
  * PetList - Grid page showing available pets for adoption, using static sample data (prepared for later API integration).
- * Displays: pet's image, name, species, breed, age, description, and location.
+ * Now with an "Adopt Now" button on each card. When clicked, opens an inquiry modal to simulate sending interest.
  * Modern, pet-friendly UI. Responsive (CSS grid style compatible with Tailwind/classic).
  *
  * Usage:
  * <PetList />
  */
+
+function InterestModal({ open, pet, onClose }) {
+  if (!open || !pet) return null;
+  return (
+    <div style={{
+      position: "fixed",
+      top: 0, left: 0,
+      width: "100vw", height: "100vh",
+      background: "rgba(30,30,50,0.16)",
+      zIndex: 50,
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center"
+    }}>
+      <div style={{
+        background: "var(--bg-primary, #fff)",
+        borderRadius: 10,
+        padding: "2rem 1.7rem 1.4rem 1.7rem",
+        boxShadow: "0 2px 26px 0 rgba(60,80,120,0.13)",
+        minWidth: 300,
+        maxWidth: 350,
+        width: "95vw"
+      }}>
+        <h3 style={{ fontWeight: 700, margin: "0 0 1rem 0", fontSize: "1.35rem" }}>
+          Send Interest for {pet.name}
+        </h3>
+        <p style={{ fontSize: "1rem", marginBottom: 20 }}>
+          This would send your inquiry to the pet lister (simulated for now).
+        </p>
+        <form autoComplete="off" style={{ display: "flex", flexDirection: "column" }}>
+          <label style={{
+            textAlign: "left",
+            marginBottom: 6,
+            fontWeight: 500
+          }}>
+            Your message
+            <span style={{ color: "#e94f64" }}> *</span>
+          </label>
+          <textarea
+            required
+            defaultValue={`Hi, I'm interested in ${pet.name}.`}
+            rows={3}
+            style={{
+              padding: "0.6rem",
+              fontSize: "1rem",
+              borderRadius: 6,
+              marginBottom: 16,
+              border: "1px solid #ccc",
+              resize: "vertical",
+            }}
+            disabled
+          />
+          <button
+            type="button"
+            className="btn"
+            style={{
+              background: "var(--button-bg)",
+              color: "var(--button-text)",
+              padding: "0.63rem",
+              border: "none",
+              fontWeight: 600,
+              borderRadius: 7,
+              fontSize: "1.07rem",
+              marginBottom: 10,
+              cursor: "pointer"
+            }}
+            onClick={onClose}
+          >
+            Send Inquiry (Demo)
+          </button>
+          <button
+            type="button"
+            style={{
+              padding: "0.4rem",
+              color: "#e94f64",
+              background: "transparent",
+              border: "none",
+              fontWeight: 500,
+              cursor: "pointer",
+              fontSize: "1.01rem"
+            }}
+            onClick={onClose}
+          >
+            Cancel
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
 const SAMPLE_PETS = [
   {
     id: 1,
@@ -65,6 +156,7 @@ const SAMPLE_PETS = [
 export default function PetList() {
   // When API integration is ready, replace this with a real fetch/useEffect, etc.
   const [pets] = useState(SAMPLE_PETS);
+  const [modalPet, setModalPet] = useState(null);
 
   return (
     <main className="container" style={{
@@ -147,9 +239,30 @@ export default function PetList() {
             }}>
               {pet.location}
             </span>
+            <button
+              className="btn"
+              style={{
+                background: "var(--button-bg)",
+                color: "var(--button-text)",
+                fontWeight: 600,
+                borderRadius: "7px",
+                padding: "0.52rem 1.18rem",
+                fontSize: "1.04rem",
+                marginTop: 12,
+                border: "none",
+                boxShadow: "0 1px 8px rgba(35,160,148,0.02)",
+                cursor: "pointer"
+              }}
+              onClick={() => setModalPet(pet)}
+              aria-label={`Adopt Now: ${pet.name}`}
+            >
+              Adopt Now
+            </button>
           </article>
         ))}
       </section>
+      {/* Modal */}
+      <InterestModal open={!!modalPet} pet={modalPet} onClose={() => setModalPet(null)} />
     </main>
   );
 }
