@@ -238,7 +238,8 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<LoginScreen />} />
             <Route path="/register" element={<RegisterScreen />} />
-            <Route path="/pets" element={<PetList />} />
+            {/* Use PetListings (API-powered) instead of demo PetList for dynamic listings */}
+            <Route path="/pets" element={<PetListings />} />
             <Route path="/pets/new" element={<PetCreateForm />} />
             {/* TODO: Add more routes/screens here */}
           </Routes>
