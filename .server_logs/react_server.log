@@ -27,3 +27,20 @@ src/api.js
   Line 58:7:  Expected an error object to be thrown  no-throw-literal
 
 webpack compiled with 1 warning
+Compiling...
+Compiled with warnings.
+
+[eslint] 
+src/api.js
+  Line 64:9:  Expected an error object to be thrown  no-throw-literal
+  Line 68:7:  Expected an error object to be thrown  no-throw-literal
+
+Search for the keywords to learn more about each warning.
+To ignore, add // eslint-disable-next-line to the line before.
+
+WARNING in [eslint] 
+src/api.js
+  Line 64:9:  Expected an error object to be thrown  no-throw-literal
+  Line 68:7:  Expected an error object to be thrown  no-throw-literal
+
+webpack compiled with 1 warning

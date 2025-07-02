@@ -2,8 +2,18 @@
 // Core API client for backend integration (OpenAPI-driven).
 // Handles JWT storing, refresh, auth checks, and all main app flows.
 //
-// PUBLIC_INTERFACE
-export const API_BASE_URL = process.env.REACT_APP_BACKEND_URL || "https://vscode-internal-6-beta.beta01.cloud.kavia.ai:3001";
+/**
+ * PUBLIC_INTERFACE
+ * API_BASE_URL - Base URL for backend API.
+ * 
+ * - Uses REACT_APP_BACKEND_URL from .env if available.
+ * - Fallbacks to current running backend container host: https://vscode-internal-3415-beta.beta01.cloud.kavia.ai:3001
+ * 
+ * To override in development, create a .env file at the project root:
+ * 
+ *   REACT_APP_BACKEND_URL=https://vscode-internal-3415-beta.beta01.cloud.kavia.ai:3001
+ */
+export const API_BASE_URL = process.env.REACT_APP_BACKEND_URL || "https://vscode-internal-3415-beta.beta01.cloud.kavia.ai:3001";
 
 // PUBLIC_INTERFACE
 export function getToken() {

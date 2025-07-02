@@ -8,6 +8,18 @@ This project provides a minimal React template with a clean, modern UI and minim
 - **Modern UI**: Clean, responsive design with KAVIA brand styling
 - **Fast**: Minimal dependencies for quick loading times
 - **Simple**: Easy to understand and modify
+## API Endpoint Configuration
+
+The frontend communicates with the FastAPI backend. By default, it points to:
+https://vscode-internal-3415-beta.beta01.cloud.kavia.ai:3001
+
+If backend is running at a different address or port, create a `.env` file in this directory:
+
+```
+REACT_APP_BACKEND_URL=https://your-backend-host:port
+```
+
+See `.env.example` for template.
 
 ## Getting Started
 
