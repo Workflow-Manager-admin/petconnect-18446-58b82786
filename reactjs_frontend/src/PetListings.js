@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { listPets, updatePet, deletePet, API_BASE_URL } from "./api";
+import { listPets, updatePet, deletePet, API_BASE_URL, sendMessage } from "./api";
 import { useAuth } from "./AuthContext";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 // Filtering Controls - for breed, age, and location search.
 function PetFilters({ filters, setFilters, loading }) {
@@ -342,6 +342,133 @@ const inputStyle = {
   borderRadius: 7,
   border: "1px solid #ccc"
 };
+
+/**
+ * Toast - Simple toast/confirmation for success
+ */
+function Toast({ message, onClose }) {
+  React.useEffect(() => {
+    if (message) {
+      const timer = setTimeout(onClose, 1700);
+      return () => clearTimeout(timer);
+    }
+  }, [message, onClose]);
+  if (!message) return null;
+  return (
+    <div
+      style={{
+        position: "fixed",
+        top: 20,
+        right: 20,
+        background: "#23a094",
+        color: "#fff",
+        padding: "0.8rem 1.6rem",
+        borderRadius: 10,
+        fontWeight: 700,
+        fontSize: "1.06rem",
+        zIndex: 9999,
+        boxShadow: "0 2px 12px rgba(35,160,148,0.09)",
+        pointerEvents: "none"
+      }}
+      aria-live="polite"
+    >
+      {message}
+    </div>
+  );
+}
+
+/**
+ * AdoptNowButton - Button for user to send inquiry to lister (owner) using /messages/send
+ */
+function AdoptNowButton({ pet, user }) {
+  const [sending, setSending] = React.useState(false);
+  const [toast, setToast] = React.useState("");
+  const [err, setErr] = React.useState("");
+  const navigate = useNavigate();
+
+  // Do not show if not available, or self-owned/listed by user, or no owner info, or demo/mock pet
+  if (
+    !pet.available ||
+    !user ||
+    typeof pet.owner_id !== "number" ||
+    pet.owner_id === user.id
+  ) {
+    return (
+      <button
+        className="btn"
+        style={{
+          background: "#e7e7e7",
+          color: "#888",
+          fontWeight: 600,
+          borderRadius: "7px",
+          padding: "0.5rem 1.3rem",
+          fontSize: "1.06rem",
+          marginBottom: 8,
+          display: "inline-block",
+          opacity: 0.6,
+          cursor: "not-allowed"
+        }}
+        disabled
+        aria-label="Adopt Now: Not available"
+      >
+        Adopt Now
+      </button>
+    );
+  }
+
+  async function handleAdopt() {
+    setSending(true);
+    setErr("");
+    // Message template
+    const petName = pet.name || "the pet";
+    const msg = `Hi, I'm interested in adopting ${petName}. Is ${petName} still available?`;
+    try {
+      await sendMessage(pet.owner_id, msg);
+      setToast("Inquiry sent!");
+      setTimeout(() => {
+        setToast("");
+        navigate("/inbox");
+      }, 1300);
+    } catch (e) {
+      setErr(
+        e?.message ||
+        (e?.error?.detail && e.error.detail[0]?.msg) ||
+        "Failed to send inquiry."
+      );
+    } finally {
+      setSending(false);
+    }
+  }
+
+  return (
+    <>
+      <button
+        className="btn"
+        style={{
+          background: "var(--button-bg)",
+          color: "var(--button-text)",
+          fontWeight: 600,
+          borderRadius: "7px",
+          padding: "0.5rem 1.3rem",
+          fontSize: "1.06rem",
+          marginBottom: 8,
+          display: "inline-block",
+          opacity: sending ? 0.7 : 1,
+          cursor: "pointer"
+        }}
+        aria-label={`Adopt Now: ${pet.name || "Pet"}`}
+        disabled={sending}
+        onClick={handleAdopt}
+      >
+        {sending ? "Sending..." : "Adopt Now"}
+      </button>
+      {err && (
+        <div style={{ color: "#e94f64", fontWeight: 500, marginTop: 6, fontSize: "0.96rem" }}>{err}</div>
+      )}
+      <Toast message={toast} onClose={() => setToast("")} />
+    </>
+  );
+}
 
 /**
  * PUBLIC_INTERFACE
@@ -779,25 +906,10 @@ function PetCard({ pet, isLoggedIn, user, onEditClick, onDeleteClick, deleting }
       </p>
       {isLoggedIn ? (
         <>
-          <Link
-            to={`/pets/${pet.id}`}
-            className="btn"
-            style={{
-              background: "#23a094",
-              color: "#fff",
-              fontWeight: 600,
-              borderRadius: "7px",
-              padding: "0.5rem 1.3rem",
-              textDecoration: "none",
-              fontSize: "1.06rem",
-              marginBottom: canEditOrDelete ? 8 : 0,
-              display: "inline-block"
-            }}
-            aria-label={`View details for ${petName}`}
-            state={{ petId: pet.id }}
-          >
-            View Details
-          </Link>
+          <AdoptNowButton
+            pet={pet}
+            user={user}
+          />
           {canEditOrDelete && (
             <div style={{ display: "flex", gap: 10, marginTop: 6 }}>
               <button
