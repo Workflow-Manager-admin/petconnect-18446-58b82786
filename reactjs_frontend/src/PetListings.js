@@ -671,16 +671,31 @@ export default function PetListings() {
 /**
  * PetCard - Single pet listing (with image, details, and CTA)
  * Shows edit/delete if user is owner or admin.
+ * 
+ * Updated: 
+ *  - Registered pets from the backend use uploaded photo URLs (pet.photos).
+ *  - Mock/demo pets use their static photo/images.
  */
 function PetCard({ pet, isLoggedIn, user, onEditClick, onDeleteClick, deleting }) {
-  // Photo fallback
-  let mainPhoto = pet.photos && pet.photos.length > 0
-    ? pet.photos[0]
-    : "https://images.unsplash.com/photo-1518717758536-85ae29035b6d?fit=crop&w=400&q=80";
+  // Determine if this is a mock/demo pet (id: string starting with "mock")
+  const isMockPet = typeof pet.id === "string" && pet.id.startsWith("mock");
+  let mainPhoto = "https://images.unsplash.com/photo-1518717758536-85ae29035b6d?fit=crop&w=400&q=80";
+  if (isMockPet) {
+    // Use the demo photo for mock/demo pets
+    mainPhoto =
+      (pet.photos && pet.photos.length > 0 && pet.photos[0])
+        || pet.photo
+        || mainPhoto;
+  } else {
+    // Registered pets from backend: show user-uploaded photo if present
+    if (pet.photos && Array.isArray(pet.photos) && pet.photos[0]) {
+      mainPhoto = pet.photos[0];
+    }
+  }
   const petName = pet.name || "Unnamed Pet";
   const locationStr =
     (pet.location_lat && pet.location_lng)
-      ? `📍 (${pet.location_lat.toFixed(2)}, ${pet.location_lng.toFixed(2)})`
+      ? `📍 (${Number(pet.location_lat).toFixed(2)}, ${Number(pet.location_lng).toFixed(2)})`
       : undefined;
   const availableTxt = pet.available ? (
     <span style={{
