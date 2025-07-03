@@ -673,51 +673,47 @@ export default function PetListings() {
  * Shows edit/delete if user is owner or admin.
  * 
  * Updated: 
- *  - Registered pets from the backend use uploaded photo URLs (pet.photos).
+ *  - Registered pets from the backend use uploaded photo URLs (pet.photos) as `${API_BASE_URL}${photo}`.
  *  - Mock/demo pets use their static photo/images.
  */
 function PetCard({ pet, isLoggedIn, user, onEditClick, onDeleteClick, deleting }) {
   // Determine if this is a mock/demo pet (id: string starting with "mock")
   const isMockPet = typeof pet.id === "string" && pet.id.startsWith("mock");
 
-  // For registered pets: show user-uploaded photo via backend static URL if valid.
+  // Always build an array of all image URLs: for registered pets, API_BASE_URL+photo; for mocks, use the full demo URLs
   let mainPhoto = "https://images.unsplash.com/photo-1518717758536-85ae29035b6d?fit=crop&w=400&q=80";
+  let allPhotos = [];
 
   if (isMockPet) {
-    // For mock/demo pets ONLY, use their photo (full demo URLs)
     if (
       Array.isArray(pet.photos) &&
       pet.photos.length > 0 &&
       typeof pet.photos[0] === "string" &&
       pet.photos[0].trim() !== ""
     ) {
+      allPhotos = pet.photos;
       mainPhoto = pet.photos[0];
     } else if (typeof pet.photo === "string" && pet.photo.trim() !== "") {
+      allPhotos = [pet.photo];
       mainPhoto = pet.photo;
     }
   } else {
-    // For real/registered pets: use backend image path if present and valid
-    if (
-      Array.isArray(pet.photos) &&
-      pet.photos.length > 0 &&
-      typeof pet.photos[0] === "string" &&
-      pet.photos[0].trim() !== ""
-    ) {
-      const photoPath = pet.photos[0].trim();
-      // If already a full URL, just use it; otherwise, prepend backend host for relative upload path
-      if (/^https?:\/\//i.test(photoPath)) {
-        mainPhoto = photoPath;
-      } else if (photoPath.startsWith("/static/") || photoPath.startsWith("static/") || photoPath.match(/\.(jpg|jpeg|png|gif)$/i)) {
-        // Remove leading slash to avoid double slash if needed
-        let rel = photoPath.startsWith("/") ? photoPath : "/" + photoPath;
-        // Compose full URL with backend API host
-        // Ensure no double '//' between host and path
-        mainPhoto = `${API_BASE_URL.replace(/\/+$/, "")}${rel}`;
+    if (Array.isArray(pet.photos) && pet.photos.length > 0) {
+      allPhotos = pet.photos
+        .filter(ph => typeof ph === "string" && ph.trim() !== "")
+        .map(photoPath => {
+          const trimmed = photoPath.trim();
+          if (/^https?:\/\//i.test(trimmed)) return trimmed;
+          let rel = trimmed.startsWith("/") ? trimmed : "/" + trimmed;
+          return `${API_BASE_URL.replace(/\/+$/, "")}${rel}`;
+        });
+      if (allPhotos.length > 0) {
+        mainPhoto = allPhotos[0];
       }
     }
   }
 
-  // Defensive: fallback if provided photo is empty, broken, or a blob/data url
+  // Defensive fallback for broken/empty photos
   if (
     !mainPhoto ||
     typeof mainPhoto !== "string" ||
@@ -726,6 +722,7 @@ function PetCard({ pet, isLoggedIn, user, onEditClick, onDeleteClick, deleting }
     mainPhoto.startsWith("data:")
   ) {
     mainPhoto = "https://images.unsplash.com/photo-1518717758536-85ae29035b6d?fit=crop&w=400&q=80";
+    allPhotos = [mainPhoto];
   }
   const petName = pet.name || "Unnamed Pet";
   const locationStr =
