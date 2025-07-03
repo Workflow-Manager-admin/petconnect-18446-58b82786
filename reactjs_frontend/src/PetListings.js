@@ -377,7 +377,7 @@ export default function PetListings() {
       location_lng: -122.4194,
       available: true,
       photos: [
-        process.env.PUBLIC_URL + "/mockpet1.jpg",
+        "/mockpet1.jpg",
       ],
       owner_id: null,
       created_at: "2024-05-17T14:00:00Z",
@@ -393,7 +393,7 @@ export default function PetListings() {
       location_lng: -122.2712,
       available: true,
       photos: [
-        process.env.PUBLIC_URL + "/mockpet2.jpg",
+        "/mockpet2.jpg",
       ],
       owner_id: null,
       created_at: "2024-05-12T12:10:00Z",
@@ -409,7 +409,7 @@ export default function PetListings() {
       location_lng: -121.8863, // San Jose
       available: true,
       photos: [
-        process.env.PUBLIC_URL + "/mockpet3.jpg",
+        "/mockpet3.jpg",
       ],
       owner_id: null,
       created_at: "2024-04-28T11:20:00Z",
@@ -425,7 +425,7 @@ export default function PetListings() {
       location_lng: -122.1430, // Palo Alto
       available: true,
       photos: [
-        process.env.PUBLIC_URL + "/mockpet1.jpg",
+        "/mockpet2.jpg",
       ],
       owner_id: null,
       created_at: "2024-05-08T09:30:00Z",
@@ -441,7 +441,7 @@ export default function PetListings() {
       location_lng: -122.0839, // Mountain View
       available: false,
       photos: [
-        process.env.PUBLIC_URL + "/mockpet2.jpg",
+        "/mockpet3.jpg",
       ],
       owner_id: null,
       created_at: "2024-04-20T08:15:00Z",
