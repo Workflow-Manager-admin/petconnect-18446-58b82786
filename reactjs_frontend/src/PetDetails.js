@@ -117,7 +117,8 @@ export default function PetDetails() {
     if (!adoptMsg.trim()) return;
     setAdoptState({ loading: true, success: "", error: "" });
     try {
-      await sendMessage(pet.owner_id, adoptMsg.trim());
+      // Defensive: always integer for user ID
+      await sendMessage(Number(pet.owner_id), adoptMsg.trim());
       setAdoptState({ loading: false, success: "Your inquiry was sent!", error: "" });
       setTimeout(() => {
         setShowAdopt(false);

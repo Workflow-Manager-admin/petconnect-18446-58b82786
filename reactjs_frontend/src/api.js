@@ -191,13 +191,18 @@ export async function updatePetLocation(petId, lat, lng) {
   });
 }
 
-// PUBLIC_INTERFACE
+/**
+ * PUBLIC_INTERFACE
+ * sendMessage - Send a message (contact/interest etc). 
+ * Fix: Ensure receiver_id is always integer and content is string to match backend requirements and avoid 422 errors.
+ */
 export async function sendMessage(receiver_id, content) {
-  // Send a message (contact/interest etc).
+  // Defensive: Ensure receiver_id is always an integer for backend validation.
+  const rid = typeof receiver_id === "string" ? parseInt(receiver_id, 10) : receiver_id;
   return await apiFetch('/messages/send', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ receiver_id, content })
+    body: JSON.stringify({ receiver_id: rid, content: String(content) })
   });
 }
 

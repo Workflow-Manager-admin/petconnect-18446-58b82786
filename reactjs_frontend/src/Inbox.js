@@ -284,7 +284,8 @@ export default function Inbox() {
     setSendLoading(true);
     setSendError(null);
     try {
-      await sendMessage(Number(receiverId), content);
+      // Always send integer ID, API requires integer for receiver_id.
+      await sendMessage(parseInt(receiverId, 10), content);
       setSendSuccess("Message sent!");
       setTimeout(() => setSendSuccess(""), 1300);
       fetchInbox();
