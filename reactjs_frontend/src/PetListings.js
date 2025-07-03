@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { listPets, updatePet, deletePet } from "./api";
+import { listPets, updatePet, deletePet, API_BASE_URL } from "./api";
 import { useAuth } from "./AuthContext";
 import { Link } from "react-router-dom";
 
@@ -679,15 +679,52 @@ export default function PetListings() {
 function PetCard({ pet, isLoggedIn, user, onEditClick, onDeleteClick, deleting }) {
   // Determine if this is a mock/demo pet (id: string starting with "mock")
   const isMockPet = typeof pet.id === "string" && pet.id.startsWith("mock");
-  // Improved logic: Always prefer first valid photo URL for all pets (backend or mock), fall back to .photo or default demo img
+
+  // For registered pets: show user-uploaded photo via backend static URL if valid.
   let mainPhoto = "https://images.unsplash.com/photo-1518717758536-85ae29035b6d?fit=crop&w=400&q=80";
-  if (Array.isArray(pet.photos) && pet.photos.length > 0 && typeof pet.photos[0] === "string" && pet.photos[0].trim() !== "") {
-    mainPhoto = pet.photos[0];
-  } else if (typeof pet.photo === "string" && pet.photo.trim() !== "") {
-    mainPhoto = pet.photo;
+
+  if (isMockPet) {
+    // For mock/demo pets ONLY, use their photo (full demo URLs)
+    if (
+      Array.isArray(pet.photos) &&
+      pet.photos.length > 0 &&
+      typeof pet.photos[0] === "string" &&
+      pet.photos[0].trim() !== ""
+    ) {
+      mainPhoto = pet.photos[0];
+    } else if (typeof pet.photo === "string" && pet.photo.trim() !== "") {
+      mainPhoto = pet.photo;
+    }
+  } else {
+    // For real/registered pets: use backend image path if present and valid
+    if (
+      Array.isArray(pet.photos) &&
+      pet.photos.length > 0 &&
+      typeof pet.photos[0] === "string" &&
+      pet.photos[0].trim() !== ""
+    ) {
+      const photoPath = pet.photos[0].trim();
+      // If already a full URL, just use it; otherwise, prepend backend host for relative upload path
+      if (/^https?:\/\//i.test(photoPath)) {
+        mainPhoto = photoPath;
+      } else if (photoPath.startsWith("/static/") || photoPath.startsWith("static/") || photoPath.match(/\.(jpg|jpeg|png|gif)$/i)) {
+        // Remove leading slash to avoid double slash if needed
+        let rel = photoPath.startsWith("/") ? photoPath : "/" + photoPath;
+        // Compose full URL with backend API host
+        // Ensure no double '//' between host and path
+        mainPhoto = `${API_BASE_URL.replace(/\/+$/, "")}${rel}`;
+      }
+    }
   }
-  // Defensive: fallback if provided photos URLs are empty or clearly broken
-  if (!mainPhoto || typeof mainPhoto !== "string" || mainPhoto.trim() === "" || mainPhoto.startsWith("blob:") || mainPhoto.startsWith("data:")) {
+
+  // Defensive: fallback if provided photo is empty, broken, or a blob/data url
+  if (
+    !mainPhoto ||
+    typeof mainPhoto !== "string" ||
+    mainPhoto.trim() === "" ||
+    mainPhoto.startsWith("blob:") ||
+    mainPhoto.startsWith("data:")
+  ) {
     mainPhoto = "https://images.unsplash.com/photo-1518717758536-85ae29035b6d?fit=crop&w=400&q=80";
   }
   const petName = pet.name || "Unnamed Pet";
