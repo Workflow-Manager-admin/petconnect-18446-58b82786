@@ -790,8 +790,11 @@ function PetCard({ pet, isLoggedIn, user, onEditClick, onDeleteClick, deleting }
               padding: "0.5rem 1.3rem",
               textDecoration: "none",
               fontSize: "1.06rem",
-              marginBottom: canEditOrDelete ? 8 : 0
+              marginBottom: canEditOrDelete ? 8 : 0,
+              display: "inline-block"
             }}
+            aria-label={`View details for ${petName}`}
+            state={{ petId: pet.id }}
           >
             View Details
           </Link>

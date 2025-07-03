@@ -159,9 +159,11 @@ export default function PetDetails() {
         style={{
           display: "flex",
           flexDirection: "column",
-          alignItems: "center"
+          alignItems: "center",
+          width: "100%"
         }}
       >
+        {/* Main Photo */}
         <img
           src={mainPhoto}
           alt={pet.name}
@@ -170,42 +172,43 @@ export default function PetDetails() {
             height: 170,
             borderRadius: 20,
             objectFit: "cover",
-            marginBottom: 22,
+            marginBottom: 18,
             border: "3px solid var(--border-color, #e7e7e7)",
             boxShadow: "0 3px 8px rgba(50,50,55,0.13)"
           }}
         />
+        {/* Name */}
         <h1
           className="title"
           style={{
             fontWeight: 800,
-            fontSize: "2.0rem",
-            marginBottom: 6,
+            fontSize: "2rem",
+            marginBottom: 2,
             letterSpacing: "0.01em",
             color: "var(--primary, var(--text-primary))"
           }}
         >
           {pet.name}
         </h1>
+        {/* Meta details row */}
         <div
           style={{
-            fontWeight: 600,
-            color: "#888",
-            marginBottom: 5,
-            fontSize: "1.13rem"
+            display: "flex",
+            alignItems: "center",
+            gap: 16,
+            marginTop: 2,
+            marginBottom: 6,
+            flexWrap: "wrap",
+            justifyContent: "center"
           }}
         >
-          {pet.species}
-          {pet.breed ? <> · {pet.breed}</> : null}
-          {pet.age !== undefined && pet.age !== null ? (
-            <> · {pet.age} yr{pet.age === 1 ? "" : "s"}</>
-          ) : null}
-        </div>
-        <div style={{
-          marginBottom: 10,
-          color: "var(--text-primary)",
-          fontSize: "1.08rem"
-        }}>
+          <span style={{ fontWeight: 600, color: "#888", fontSize: "1.12rem" }}>
+            {pet.species}
+            {pet.breed ? <span> &middot; {pet.breed}</span> : null}
+            {pet.age !== undefined && pet.age !== null ? (
+              <span> &middot; {pet.age} yr{pet.age === 1 ? "" : "s"}</span>
+            ) : null}
+          </span>
           <span
             style={{
               background: "#ffb900",
@@ -213,61 +216,64 @@ export default function PetDetails() {
               borderRadius: 7,
               fontWeight: 600,
               padding: "3px 12px",
-              fontSize: "0.97rem",
-              marginRight: 7
+              fontSize: "0.97rem"
             }}>
             {locationStr ? `📍 ${locationStr}` : "Location: Not specified"}
           </span>
-          {pet.available ? (
-            <span
-              style={{
-                color: "#23a094",
-                fontWeight: 600,
-                background: "rgba(35,160,148,0.10)",
-                borderRadius: 7,
-                fontSize: "0.97rem",
-                padding: "1px 8px",
-                marginLeft: 6
-              }}
-            >
-              Available
-            </span>
-          ) : (
-            <span
-              style={{
-                color: "#888",
-                fontWeight: 600,
-                background: "#f3f3f3",
-                borderRadius: 7,
-                fontSize: "0.94rem",
-                padding: "1px 8px",
-                marginLeft: 6
-              }}
-            >
-              Adopted
-            </span>
-          )}
+          <span
+            style={{
+              color: pet.available ? "#23a094" : "#888",
+              fontWeight: 600,
+              background: pet.available ? "rgba(35,160,148,0.10)" : "#f3f3f3",
+              borderRadius: 7,
+              fontSize: "0.97rem",
+              padding: "1px 8px"
+            }}
+          >
+            {pet.available ? "Available" : "Adopted"}
+          </span>
         </div>
-        {/* Show description */}
-        <div style={{
-          maxWidth: 500,
-          color: "var(--text-primary)",
-          fontSize: "1.11rem",
-          margin: "8px 0 22px 0",
-          textAlign: "center"
-        }}>
-          {pet.description || (
-            <span style={{ color: "#aaa" }}>No description provided.</span>
-          )}
+        {/* List of fields in visually grouped format */}
+        <div
+          style={{
+            background: "rgba(250,250,250,0.85)",
+            border: "1px solid var(--border-color)",
+            borderRadius: 14,
+            maxWidth: 470,
+            minWidth: 260,
+            padding: "1.1rem 1.2rem 0.5rem 1.2rem",
+            margin: "10px 0 18px 0",
+            boxShadow: "0 2px 8px rgba(30,80,120,0.07)"
+          }}>
+          <dl style={{ margin: 0, fontSize: "1.05rem", color: "var(--text-primary)" }}>
+            <dt style={{ fontWeight: 600, float: "left", minWidth: 70, color: "#888" }}>Name:</dt>
+            <dd style={{ marginLeft: 90, marginBottom: 5 }}>{pet.name}</dd>
+            <dt style={{ fontWeight: 600, float: "left", minWidth: 70, color: "#888" }}>Species:</dt>
+            <dd style={{ marginLeft: 90, marginBottom: 5 }}>{pet.species}</dd>
+            <dt style={{ fontWeight: 600, float: "left", minWidth: 70, color: "#888" }}>Breed:</dt>
+            <dd style={{ marginLeft: 90, marginBottom: 5 }}>{pet.breed || <span style={{ color: "#aaa" }}>Unknown</span>}</dd>
+            <dt style={{ fontWeight: 600, float: "left", minWidth: 70, color: "#888" }}>Age:</dt>
+            <dd style={{ marginLeft: 90, marginBottom: 5 }}>{pet.age !== undefined && pet.age !== null ? `${pet.age} yr${pet.age === 1 ? "" : "s"}` : <span style={{ color: "#aaa" }}>Unknown</span>}</dd>
+            <dt style={{ fontWeight: 600, float: "left", minWidth: 70, color: "#888" }}>Location:</dt>
+            <dd style={{ marginLeft: 90, marginBottom: 5 }}>{locationStr || <span style={{ color: "#aaa" }}>Not specified</span>}</dd>
+            <dt style={{ fontWeight: 600, float: "left", minWidth: 70, color: "#888" }}>Available:</dt>
+            <dd style={{ marginLeft: 90, marginBottom: 5 }}>{pet.available ? "Yes" : "No"}</dd>
+            <dt style={{ fontWeight: 600, float: "left", minWidth: 70, color: "#888" }}>Bio:</dt>
+            <dd style={{ marginLeft: 90, marginBottom: 5 }}>
+              {pet.description || <span style={{ color: "#aaa" }}>No bio/description.</span>}
+            </dd>
+          </dl>
+          <div style={{ clear: "both" }} />
         </div>
-        {/* Additional Photos */}
-        {photos.length > 1 && (
+        {/* Additional Photos Grid */}
+        {photos.length > 1 &&
           <div
             style={{
               display: "flex",
               gap: 10,
               marginBottom: 18,
-              flexWrap: "wrap"
+              flexWrap: "wrap",
+              justifyContent: "center"
             }}
           >
             {photos.slice(1).map((ph, i) => (
@@ -280,14 +286,21 @@ export default function PetDetails() {
                   height: 62,
                   objectFit: "cover",
                   borderRadius: 10,
-                  border: "1.5px solid var(--border-color, #e7e7e7)"
+                  border: "1.5px solid var(--border-color, #e7e7e7)",
+                  margin: 2
                 }}
               />
             ))}
           </div>
-        )}
-        {/* Main actions */}
-        <div style={{ marginTop: 16 }}>
+        }
+        {/* Main actions row */}
+        <div style={{
+          marginTop: 10,
+          display: "flex",
+          gap: 16,
+          justifyContent: "center",
+          flexWrap: "wrap"
+        }}>
           <button
             className="btn"
             style={{
@@ -297,7 +310,7 @@ export default function PetDetails() {
               borderRadius: "8px",
               padding: "0.68rem 2.1rem",
               fontSize: "1.12rem",
-              marginRight: 11,
+              marginRight: 4,
               border: "none",
               boxShadow: "0 1px 7px rgba(35,160,148,0.06)",
               opacity: canAdopt ? 1 : 0.55,
@@ -319,7 +332,7 @@ export default function PetDetails() {
               fontWeight: 600,
               padding: "0.68rem 2.1rem",
               fontSize: "1.08rem",
-              marginLeft: 6
+              marginLeft: 4
             }}
             onClick={() => navigate(-1)}
           >
@@ -334,14 +347,13 @@ export default function PetDetails() {
               padding: "7px 13px",
               borderRadius: 8,
               fontWeight: 600,
-              marginTop: 14,
+              marginTop: 16,
               fontSize: "1.04rem"
             }}
           >
             You posted this listing.
           </div>
         )}
-        {/* If not logged in and tries to click adopt */}
         {!user && (
           <div style={{ marginTop: 20, color: "#e94f64", fontWeight: 500 }}>
             Login to contact the pet lister.
