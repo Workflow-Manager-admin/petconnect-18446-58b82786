@@ -679,18 +679,16 @@ export default function PetListings() {
 function PetCard({ pet, isLoggedIn, user, onEditClick, onDeleteClick, deleting }) {
   // Determine if this is a mock/demo pet (id: string starting with "mock")
   const isMockPet = typeof pet.id === "string" && pet.id.startsWith("mock");
+  // Improved logic: Always prefer first valid photo URL for all pets (backend or mock), fall back to .photo or default demo img
   let mainPhoto = "https://images.unsplash.com/photo-1518717758536-85ae29035b6d?fit=crop&w=400&q=80";
-  if (isMockPet) {
-    // Use the demo photo for mock/demo pets
-    mainPhoto =
-      (pet.photos && pet.photos.length > 0 && pet.photos[0])
-        || pet.photo
-        || mainPhoto;
-  } else {
-    // Registered pets from backend: show user-uploaded photo if present
-    if (pet.photos && Array.isArray(pet.photos) && pet.photos[0]) {
-      mainPhoto = pet.photos[0];
-    }
+  if (Array.isArray(pet.photos) && pet.photos.length > 0 && typeof pet.photos[0] === "string" && pet.photos[0].trim() !== "") {
+    mainPhoto = pet.photos[0];
+  } else if (typeof pet.photo === "string" && pet.photo.trim() !== "") {
+    mainPhoto = pet.photo;
+  }
+  // Defensive: fallback if provided photos URLs are empty or clearly broken
+  if (!mainPhoto || typeof mainPhoto !== "string" || mainPhoto.trim() === "" || mainPhoto.startsWith("blob:") || mainPhoto.startsWith("data:")) {
+    mainPhoto = "https://images.unsplash.com/photo-1518717758536-85ae29035b6d?fit=crop&w=400&q=80";
   }
   const petName = pet.name || "Unnamed Pet";
   const locationStr =
