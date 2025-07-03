@@ -6,6 +6,7 @@ import RegisterScreen from "./RegisterScreen";
 import PetListings from "./PetListings";
 import PetCreateForm from "./PetCreateForm";
 import PetList from "./PetList";
+import PetDetails from "./PetDetails";
 import Inbox from "./Inbox";
 import { AuthProvider, useAuth } from "./AuthContext";
 
@@ -248,8 +249,9 @@ function App() {
             <Route path="/register" element={<RegisterScreen />} />
             {/* Use PetListings - dynamic API-backed, for actual pet list with all features */}
             <Route path="/pets" element={<PetListings />} />
-            <Route path="/inbox" element={<Inbox />} />
             <Route path="/pets/new" element={<PetCreateForm />} />
+            <Route path="/pets/:petId" element={<PetDetails />} />
+            <Route path="/inbox" element={<Inbox />} />
             {/* TODO: Add more routes/screens here */}
           </Routes>
         </div>
