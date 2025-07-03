@@ -699,20 +699,14 @@ function PetCard({ pet, isLoggedIn, user, onEditClick, onDeleteClick, deleting }
       mainPhoto = pet.photo;
     }
   } else {
-    // Registered (real) pets: always use `${API_BASE_URL}${photo}`
+    // Registered (real) pets: prepend API_BASE_URL to each photo path (only if not already absolute)
     if (Array.isArray(pet.photos) && pet.photos.length > 0) {
       allPhotos = pet.photos
         .filter(ph => typeof ph === "string" && ph.trim() !== "")
         .map(photoPath => {
-          // Prepend API_BASE_URL to all photo entries (even if photo is an absolute URL, backend should only emit rel paths)
+          // Ensure photoPath is a relative path (backend always emits relative, but defensive)
           const trimmed = photoPath.trim();
-          // If already absolute, still prepend, unless required to retain as absolute (business rule: use only `${API_BASE_URL}${photo}` for real pets)
-          if (/^https?:\/\//i.test(trimmed)) {
-            // Optionally, do not prepend. But per the task, backend pet => always prepend.
-            let rel = trimmed.startsWith("/") ? trimmed : "/" + trimmed;
-            return `${API_BASE_URL.replace(/\/+$/, "")}${rel}`;
-          }
-          // Always prepend
+          // Always prepend API_BASE_URL per requirements for registered pets
           let rel = trimmed.startsWith("/") ? trimmed : "/" + trimmed;
           return `${API_BASE_URL.replace(/\/+$/, "")}${rel}`;
         });
