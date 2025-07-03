@@ -4,17 +4,14 @@ import { useAuth } from "./AuthContext";
 import { Link } from "react-router-dom";
 
 // Filtering Controls - for breed, age, and location search.
-// (Placed above main PetListings component for clarity.)
 function PetFilters({ filters, setFilters, loading }) {
   // Debounce typing for search inputs
   const [localFilters, setLocalFilters] = useState(filters);
 
-  // Sync local/parent state if props change externally (uncommon here)
-  React.useEffect(() => {
+  useEffect(() => {
     setLocalFilters(filters);
   }, [filters]);
 
-  // Only handle UI change locally, propagate up after a brief debounce
   useEffect(() => {
     const delay = setTimeout(() => {
       setFilters(localFilters);
@@ -125,8 +122,6 @@ function PetFilters({ filters, setFilters, loading }) {
     </section>
   );
 }
-
-// Small styles for filter UI
 const filterLabelStyle = {
   textAlign: "left",
   marginBottom: 2,
@@ -141,11 +136,7 @@ const filterInputStyle = {
   border: "1px solid #ccc",
   width: "100%"
 };
-/**
- * PUBLIC_INTERFACE
- * PetEditModal - modal dialog for editing a pet listing (owner or admin only).
- * Props: open (bool), onClose, pet (obj), onSave (fn)
- */
+
 function PetEditModal({ open, onClose, pet, onSave }) {
   const [form, setForm] = useState({
     name: pet?.name || "",
@@ -160,7 +151,6 @@ function PetEditModal({ open, onClose, pet, onSave }) {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
 
-  // Sync form with pet prop when modal is opened/changed
   React.useEffect(() => {
     if (pet) {
       setForm({
@@ -199,7 +189,6 @@ function PetEditModal({ open, onClose, pet, onSave }) {
     }
     return null;
   }
-  // PUBLIC_INTERFACE
   async function handleSubmit(e) {
     e.preventDefault();
     setError(null);
@@ -322,7 +311,6 @@ function PetEditModal({ open, onClose, pet, onSave }) {
     </div>
   );
 }
-
 const modalOverlayStyle = {
   position: "fixed",
   zIndex: 9999,
@@ -354,6 +342,7 @@ const inputStyle = {
   borderRadius: 7,
   border: "1px solid #ccc"
 };
+
 /**
  * PUBLIC_INTERFACE
  * PetListings - A responsive dashboard that fetches and displays all pet listings from the backend.
@@ -377,7 +366,8 @@ export default function PetListings() {
       location_lng: -122.4194,
       available: true,
       photos: [
-        "/mockpet1.jpg",
+        // Unsplash Labrador Retriever (unique)
+        "https://images.unsplash.com/photo-1518717758536-85ae29035b6d?auto=format&fit=crop&w=400&q=80",
       ],
       owner_id: null,
       created_at: "2024-05-17T14:00:00Z",
@@ -393,7 +383,8 @@ export default function PetListings() {
       location_lng: -122.2712,
       available: true,
       photos: [
-        "/mockpet2.jpg",
+        // Unsplash Maine Coon
+        "https://images.unsplash.com/photo-1518715308788-3005759c0614?auto=format&fit=crop&w=400&q=80",
       ],
       owner_id: null,
       created_at: "2024-05-12T12:10:00Z",
@@ -409,7 +400,8 @@ export default function PetListings() {
       location_lng: -121.8863, // San Jose
       available: true,
       photos: [
-        "/mockpet3.jpg",
+        // Wikimedia Commons Beagle (license-free)
+        "https://upload.wikimedia.org/wikipedia/commons/5/55/Beagle_600.jpg"
       ],
       owner_id: null,
       created_at: "2024-04-28T11:20:00Z",
@@ -425,7 +417,8 @@ export default function PetListings() {
       location_lng: -122.1430, // Palo Alto
       available: true,
       photos: [
-        "/mockpet2.jpg",
+        // Pexels black cat (Bombay)
+        "https://images.pexels.com/photos/45201/kitty-cat-kitten-pet-45201.jpeg?auto=compress&w=400&q=80"
       ],
       owner_id: null,
       created_at: "2024-05-08T09:30:00Z",
@@ -441,19 +434,18 @@ export default function PetListings() {
       location_lng: -122.0839, // Mountain View
       available: false,
       photos: [
-        "/mockpet3.jpg",
+        // Wikimedia Commons puppy (Mixed breed, license-free)
+        "https://upload.wikimedia.org/wikipedia/commons/0/0c/American_Eskimo-puppy.jpg"
       ],
       owner_id: null,
       created_at: "2024-04-20T08:15:00Z",
     },
   ];
 
-  // UI state
   const [pets, setPets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Filter state (breed, age, lat, lng)
   const [filters, setFilters] = useState({
     breed: "",
     age: "",
@@ -461,14 +453,11 @@ export default function PetListings() {
     location_lng: ""
   });
 
-  // For edit/delete modals
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [editingPet, setEditingPet] = useState(null);
   const [deletingPetId, setDeletingPetId] = useState(null);
   const [successMsg, setSuccessMsg] = useState(null);
 
-  // Real-time fetch for pet listings w/filters
-  // Each filter value triggers backend call
   useEffect(() => {
     let active = true;
     setLoading(true);
@@ -494,17 +483,14 @@ export default function PetListings() {
     listPets(apiFilters)
       .then((data) => {
         if (!active) return;
-        // Combine backend pets with mock pets.
-        // To keep UX/filters realistic, only show mock pets that match active filters.
+        // Combine backend pets with mock pets. Only show mock pets that match filters.
         const filteredMocks = MOCK_PETS.filter(mock => {
-          // Simple filter logic matching filter panel
           if (apiFilters.breed && (!mock.breed || !mock.breed.toLowerCase().includes(apiFilters.breed.toLowerCase()))) return false;
           if (apiFilters.age && Number(mock.age) !== Number(apiFilters.age)) return false;
           if (apiFilters.location_lat && Number(mock.location_lat).toFixed(2) !== Number(apiFilters.location_lat).toFixed(2)) return false;
           if (apiFilters.location_lng && Number(mock.location_lng).toFixed(2) !== Number(apiFilters.location_lng).toFixed(2)) return false;
           return true;
         });
-        // Render backend-registered pets *first* then mock demo pets after
         setPets([
           ...(Array.isArray(data) ? data : []),
           ...filteredMocks
@@ -525,16 +511,13 @@ export default function PetListings() {
     return () => { active = false; };
   }, [filters]);
 
-  // Handler for opening edit modal
   function handleEditClick(pet) {
     setEditingPet(pet);
     setEditModalOpen(true);
   }
 
-  // Handler for saving pet edits (calls backend, then updates state)
   async function handleEditSave(petId, updateObj) {
     await updatePet(petId, updateObj);
-    // Update pet in UI state optimistically
     setPets((current) =>
       current.map((p) => (p.id === petId ? { ...p, ...updateObj } : p))
     );
@@ -542,7 +525,6 @@ export default function PetListings() {
     setTimeout(() => setSuccessMsg(null), 1500);
   }
 
-  // Handler for delete request
   async function handleDeleteClick(pet) {
     if (!window.confirm("Are you sure you want to delete this pet listing? This action cannot be undone.")) {
       return;
@@ -564,7 +546,6 @@ export default function PetListings() {
     }
   }
 
-  // Loading state
   if (loading || authLoading) {
     return (
       <section className="container" style={{ textAlign: "center", padding: "3rem 0" }}>
@@ -574,8 +555,6 @@ export default function PetListings() {
       </section>
     );
   }
-
-  // Error display
   if (error) {
     return (
       <section className="container" style={{ textAlign: "center", padding: "3rem 0" }}>
@@ -601,8 +580,6 @@ export default function PetListings() {
       </section>
     );
   }
-
-  // Pet empty state
   if (!pets || pets.length === 0) {
     return (
       <main className="container" style={{ textAlign: "center", padding: "3rem 0" }}>
@@ -615,7 +592,6 @@ export default function PetListings() {
     );
   }
 
-  // Responsive card grid for pet listings
   return (
     <main className="container" style={{ maxWidth: 1200, margin: "0 auto", padding: "3rem 1.2rem 1.6rem 1.2rem" }}>
       <h2 className="title" style={{ fontSize: "2rem", fontWeight: 700, textAlign: "center", marginBottom: 24 }}>
@@ -657,7 +633,6 @@ export default function PetListings() {
           />
         ))}
       </section>
-      {/* Edit Modal */}
       <PetEditModal
         open={editModalOpen}
         onClose={() => setEditModalOpen(false)}
@@ -670,11 +645,6 @@ export default function PetListings() {
 
 /**
  * PetCard - Single pet listing (with image, details, and CTA)
- * Shows edit/delete if user is owner or admin.
- * 
- * Updated: 
- *  - Registered pets from the backend use uploaded photo URLs (pet.photos) as `${API_BASE_URL}${photo}`.
- *  - Mock/demo pets use their static photo/images.
  */
 function PetCard({ pet, isLoggedIn, user, onEditClick, onDeleteClick, deleting }) {
   // Determine if this is a mock/demo pet (id: string starting with "mock")
@@ -691,7 +661,7 @@ function PetCard({ pet, isLoggedIn, user, onEditClick, onDeleteClick, deleting }
       typeof pet.photos[0] === "string" &&
       pet.photos[0].trim() !== ""
     ) {
-      // For demo pets, their photos array is already absolute URLs
+      // For demo pets, photos array is absolute URLs to public domain/CC-0/Unsplash/Pexels/Wikimedia images
       allPhotos = pet.photos;
       mainPhoto = pet.photos[0];
     } else if (typeof pet.photo === "string" && pet.photo.trim() !== "") {
@@ -699,14 +669,12 @@ function PetCard({ pet, isLoggedIn, user, onEditClick, onDeleteClick, deleting }
       mainPhoto = pet.photo;
     }
   } else {
-    // Registered (real) pets: prepend API_BASE_URL to each photo path (only if not already absolute)
+    // Registered (real) pets: prepend API_BASE_URL to each photo path 
     if (Array.isArray(pet.photos) && pet.photos.length > 0) {
       allPhotos = pet.photos
         .filter(ph => typeof ph === "string" && ph.trim() !== "")
         .map(photoPath => {
-          // Ensure photoPath is a relative path (backend always emits relative, but defensive)
           const trimmed = photoPath.trim();
-          // Always prepend API_BASE_URL per requirements for registered pets
           let rel = trimmed.startsWith("/") ? trimmed : "/" + trimmed;
           return `${API_BASE_URL.replace(/\/+$/, "")}${rel}`;
         });
@@ -754,11 +722,9 @@ function PetCard({ pet, isLoggedIn, user, onEditClick, onDeleteClick, deleting }
     }}>Adopted</span>
   );
 
-  // Owner or admin logic
   const isOwner = user && pet.owner_id === user.id;
   const isAdmin = user && user.role === "admin";
   const canEditOrDelete = isOwner || isAdmin;
-
   return (
     <article
       style={{
