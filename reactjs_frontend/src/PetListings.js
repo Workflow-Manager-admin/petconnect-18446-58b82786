@@ -434,8 +434,8 @@ export default function PetListings() {
       location_lng: -122.0839, // Mountain View
       available: false,
       photos: [
-        // Wikimedia Commons puppy (Mixed breed, license-free)
-        "https://upload.wikimedia.org/wikipedia/commons/0/0c/American_Eskimo-puppy.jpg"
+        // Wikimedia Commons: Mixed breed puppy, license-free (used for high availability)
+        "https://upload.wikimedia.org/wikipedia/commons/6/6e/Golde33443.jpg"
       ],
       owner_id: null,
       created_at: "2024-04-20T08:15:00Z",
