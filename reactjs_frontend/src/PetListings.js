@@ -372,7 +372,7 @@ export default function PetListings() {
       species: "Dog",
       breed: "Labrador Retriever",
       age: 3,
-      description: "Sweet, playful, and loves fetch. Great with kids! (Demo)",
+      description: "Sweet, playful, and loves fetch. Great with kids!",
       location_lat: 37.7749, // San Francisco
       location_lng: -122.4194,
       available: true,
@@ -388,7 +388,7 @@ export default function PetListings() {
       species: "Cat",
       breed: "Maine Coon",
       age: 5,
-      description: "Gentle giant. Prefers quiet homes. Loves chin scratches. (Demo)",
+      description: "Gentle giant. Prefers quiet homes. Loves chin scratches.",
       location_lat: 37.8044, // Oakland
       location_lng: -122.2712,
       available: true,
@@ -404,7 +404,7 @@ export default function PetListings() {
       species: "Dog",
       breed: "Beagle",
       age: 2,
-      description: "Curious and energetic. Adorable howl. (Demo)",
+      description: "Curious and energetic. Adorable howl.",
       location_lat: 37.3382,
       location_lng: -121.8863, // San Jose
       available: true,
@@ -420,7 +420,7 @@ export default function PetListings() {
       species: "Cat",
       breed: "Bombay",
       age: 4,
-      description: "Very affectionate and talkative. Litter-trained. (Demo)",
+      description: "Very affectionate and talkative. Litter-trained.",
       location_lat: 37.4419,
       location_lng: -122.1430, // Palo Alto
       available: true,
@@ -436,7 +436,7 @@ export default function PetListings() {
       species: "Dog",
       breed: "Mixed",
       age: 1,
-      description: "Goofy puppy energy. Learning basic commands; very smart. (Demo)",
+      description: "Goofy puppy energy. Learning basic commands; very smart.",
       location_lat: 37.3861,
       location_lng: -122.0839, // Mountain View
       available: false,
