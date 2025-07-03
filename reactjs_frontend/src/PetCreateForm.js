@@ -90,8 +90,8 @@ export default function PetCreateForm() {
         files: []
       });
       setTimeout(() => {
-        // Optionally redirect to listings or another relevant page
-        navigate("/pets");
+        // After successful creation, redirect to pet listings and pass a trigger to refresh
+        navigate("/pets", { state: { petCreated: true, refresh: Date.now() } });
       }, 1200);
     } catch (err) {
       setError(
