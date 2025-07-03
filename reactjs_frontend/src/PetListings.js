@@ -363,6 +363,91 @@ const inputStyle = {
 export default function PetListings() {
   const { user, authLoading } = useAuth();
 
+  // ---- MOCK DEMO PETS ----
+  // These demo/mock pets will be shown along with backend pets
+  const MOCK_PETS = [
+    {
+      id: "mock1",
+      name: "Bella",
+      species: "Dog",
+      breed: "Labrador Retriever",
+      age: 3,
+      description: "Sweet, playful, and loves fetch. Great with kids! (Demo)",
+      location_lat: 37.7749, // San Francisco
+      location_lng: -122.4194,
+      available: true,
+      photos: [
+        "https://images.unsplash.com/photo-1518717758536-85ae29035b6d?auto=format&fit=crop&w=400&q=80",
+      ],
+      owner_id: null,
+      created_at: "2024-05-17T14:00:00Z",
+    },
+    {
+      id: "mock2",
+      name: "Milo",
+      species: "Cat",
+      breed: "Maine Coon",
+      age: 5,
+      description: "Gentle giant. Prefers quiet homes. Loves chin scratches. (Demo)",
+      location_lat: 37.8044, // Oakland
+      location_lng: -122.2712,
+      available: true,
+      photos: [
+        "https://images.unsplash.com/photo-1518715308788-3005759c0614?auto=format&fit=crop&w=400&q=80",
+      ],
+      owner_id: null,
+      created_at: "2024-05-12T12:10:00Z",
+    },
+    {
+      id: "mock3",
+      name: "Daisy",
+      species: "Dog",
+      breed: "Beagle",
+      age: 2,
+      description: "Curious and energetic. Adorable howl. (Demo)",
+      location_lat: 37.3382,
+      location_lng: -121.8863, // San Jose
+      available: true,
+      photos: [
+        "https://images.unsplash.com/photo-1507146426996-ef05306b995a?auto=format&fit=crop&w=400&q=80",
+      ],
+      owner_id: null,
+      created_at: "2024-04-28T11:20:00Z",
+    },
+    {
+      id: "mock4",
+      name: "Shadow",
+      species: "Cat",
+      breed: "Bombay",
+      age: 4,
+      description: "Very affectionate and talkative. Litter-trained. (Demo)",
+      location_lat: 37.4419,
+      location_lng: -122.1430, // Palo Alto
+      available: true,
+      photos: [
+        "https://images.unsplash.com/photo-1518715308788-3005759c0614?auto=format&fit=crop&w=400&q=80",
+      ],
+      owner_id: null,
+      created_at: "2024-05-08T09:30:00Z",
+    },
+    {
+      id: "mock5",
+      name: "Cleo",
+      species: "Dog",
+      breed: "Mixed",
+      age: 1,
+      description: "Goofy puppy energy. Learning basic commands; very smart. (Demo)",
+      location_lat: 37.3861,
+      location_lng: -122.0839, // Mountain View
+      available: false,
+      photos: [
+        "https://images.unsplash.com/photo-1558788353-f76d92427f16?auto=format&fit=crop&w=400&q=80",
+      ],
+      owner_id: null,
+      created_at: "2024-04-20T08:15:00Z",
+    },
+  ];
+
   // UI state
   const [pets, setPets] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -409,7 +494,21 @@ export default function PetListings() {
     listPets(apiFilters)
       .then((data) => {
         if (!active) return;
-        setPets(data);
+        // Combine backend pets with mock pets.
+        // To keep UX/filters realistic, only show mock pets that match active filters.
+        const filteredMocks = MOCK_PETS.filter(mock => {
+          // Simple filter logic matching filter panel
+          if (apiFilters.breed && (!mock.breed || !mock.breed.toLowerCase().includes(apiFilters.breed.toLowerCase()))) return false;
+          if (apiFilters.age && Number(mock.age) !== Number(apiFilters.age)) return false;
+          if (apiFilters.location_lat && Number(mock.location_lat).toFixed(2) !== Number(apiFilters.location_lat).toFixed(2)) return false;
+          if (apiFilters.location_lng && Number(mock.location_lng).toFixed(2) !== Number(apiFilters.location_lng).toFixed(2)) return false;
+          return true;
+        });
+        // Render backend-registered pets *first* then mock demo pets after
+        setPets([
+          ...(Array.isArray(data) ? data : []),
+          ...filteredMocks
+        ]);
       })
       .catch((err) => {
         if (!active) return;
@@ -425,7 +524,6 @@ export default function PetListings() {
 
     return () => { active = false; };
   }, [filters]);
-
 
   // Handler for opening edit modal
   function handleEditClick(pet) {
