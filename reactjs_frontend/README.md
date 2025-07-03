@@ -11,9 +11,9 @@ This project provides a minimal React template with a clean, modern UI and minim
 ## API Endpoint Configuration
 
 The frontend communicates with the FastAPI backend. By default, it points to:
-https://vscode-internal-3415-beta.beta01.cloud.kavia.ai:3001
+https://vscode-internal-2193-beta.beta01.cloud.kavia.ai:3001
 
-If backend is running at a different address or port, create a `.env` file in this directory:
+If backend is running at a different address or port (or you're connecting to a production/staging server), create a `.env` file in this directory:
 
 ```
 REACT_APP_BACKEND_URL=https://your-backend-host:port
@@ -21,17 +21,18 @@ REACT_APP_BACKEND_URL=https://your-backend-host:port
 
 # Troubleshooting Connectivity
 
-- If you get "localhost refused to connect", check:
-  - The FastAPI backend is running and accessible at the URL set in `.env`.
+- If you get "Failed to fetch" or CORS errors, or see "localhost refused to connect", check:
+  - The FastAPI backend is running and accessible at the URL set in `.env` (or the default above).
   - The frontend React app is restarted after changes to `.env`.
   - The browser console/network tab for CORS/network errors.
-  - Your `package.json` for a `"proxy"` field (for local dev, when running backend at `localhost`, recommended for avoiding CORS).
+  - Your `package.json` for a `"proxy"` field (for local dev, when running backend at `localhost`, recommended for avoiding some CORS issues).
   - That the URL in `.env` is reachable in your browser (not blocked by firewall or misconfigured port).
+  - That your backend FastAPI server CORS is configured to allow requests from your frontend (see developer/server docs for CORS settings).
 
 ## .env Example
 
 ```
-REACT_APP_BACKEND_URL=https://vscode-internal-3415-beta.beta01.cloud.kavia.ai:3001
+REACT_APP_BACKEND_URL=https://vscode-internal-2193-beta.beta01.cloud.kavia.ai:3001
 ```
 
 - Make sure there are no extra spaces or quotes in the value!

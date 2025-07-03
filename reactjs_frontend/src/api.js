@@ -13,7 +13,7 @@
  * 
  *   REACT_APP_BACKEND_URL=https://vscode-internal-3415-beta.beta01.cloud.kavia.ai:3001
  */
-export const API_BASE_URL = process.env.REACT_APP_BACKEND_URL || "https://vscode-internal-3415-beta.beta01.cloud.kavia.ai:3001";
+export const API_BASE_URL = process.env.REACT_APP_BACKEND_URL || "https://vscode-internal-2193-beta.beta01.cloud.kavia.ai:3001";
 
 // PUBLIC_INTERFACE
 export function getToken() {
