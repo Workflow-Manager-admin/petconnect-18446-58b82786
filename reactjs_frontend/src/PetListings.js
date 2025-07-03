@@ -366,8 +366,8 @@ export default function PetListings() {
       location_lng: -122.4194,
       available: true,
       photos: [
-        // Unsplash Labrador Retriever (unique)
-        "https://images.unsplash.com/photo-1518717758536-85ae29035b6d?auto=format&fit=crop&w=400&q=80",
+        // Unsplash Labrador Retriever (unique replacement, new URL)
+        "https://images.unsplash.com/photo-1558788353-f76d92427f16?auto=format&fit=crop&w=500&q=80",
       ],
       owner_id: null,
       created_at: "2024-05-17T14:00:00Z",
