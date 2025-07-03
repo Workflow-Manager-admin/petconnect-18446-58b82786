@@ -383,8 +383,10 @@ export default function PetListings() {
       location_lng: -122.2712,
       available: true,
       photos: [
-        // Unsplash Maine Coon
+        // Unsplash license-free cat portrait
         "https://images.unsplash.com/photo-1518715308788-3005759c0614?auto=format&fit=crop&w=400&q=80",
+        // Alternative: Wikimedia Commons, fallback Cat
+        // "https://upload.wikimedia.org/wikipedia/commons/3/3a/Cat03.jpg"
       ],
       owner_id: null,
       created_at: "2024-05-12T12:10:00Z",
